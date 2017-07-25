@@ -1,0 +1,60 @@
+<h1>Share Post</h1>
+
+
+<% if @post.errors.any? %>	
+	<ul>
+	<% @post.errors.full_messages.each do |msg|%>
+		<li><%= msg %></li>
+	<%end%>
+	</ul>
+<%end%>
+
+<div class="row">
+    <div class="col-xs-8 ">  
+      <div class="well well-lg">  
+
+        <div class="post-owner">
+          <h4><strong> <%= link_to @parent_post.user.username, user_path(@parent_post.user) %> </strong> </h4>
+        </div>
+
+        <div class="post-title">
+          <h4><strong><%= @parent_post.title %></strong></h4>
+        </div>
+
+        <div>
+          <%= raw @parent_post.body %>
+        </div>
+
+      </div>   
+  </div>
+</div>
+
+<%= form_for(@post) do |f| %>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :body %><br>
+    <%= f.text_area :body %>
+  </div>
+  
+  <div>
+    <%= f.label :select_friends_to_tag %><br>
+    <%= f.select :user_ids , options_from_collection_for_select(@my_friends, "id", "username"),{}, { :multiple => true, :size => 5} %>  
+  </div>
+
+  <div>
+    <%= f.select :privacy, [['private','private_post'],['public','public_post']]  , :selected => @post.privacy %>
+    
+    <%= f.hidden_field :parent_post_id, {:value => @parent_post.id} %>  
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+
+
+<%= link_to 'Back', posts_path %>

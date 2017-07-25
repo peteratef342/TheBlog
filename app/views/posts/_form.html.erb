@@ -1,0 +1,41 @@
+<%= form_for(@post) do |f| %>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :body %><br>
+    <%= f.cktext_area :body %>
+  </div>
+  
+  <div>
+    <%= f.select :privacy, [['private','private_post'],['public','public_post']]  , :selected => @post.privacy %>
+  </div>
+
+  <% if @is_edit %>    
+    <%= f.select :user_ids , options_from_collection_for_select(@my_friends, "id", "username", @post.tags.map(&:user_id)),{}, { :multiple => true, :size => 5}%>  
+  <% else %>
+    <div>
+      <%= f.label :select_friends_to_tag %><br>
+      <%= f.select :user_ids , options_from_collection_for_select(@my_friends, "id", "username"),{}, { :multiple => true, :size => 5} %>  
+    </div>
+  <% end %>
+  
+  
+  <div class="actions" >
+    <%= f.submit %>
+  </div>
+<% end %>
+
+
+<script type="text/javascript">
+  $("#post_user_ids").select2({
+        placeholder: "Choose a person",
+        allowClear: true,
+        multiple: true
+  });
+
+</script>
+
+

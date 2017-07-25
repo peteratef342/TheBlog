@@ -1,0 +1,21 @@
+  <div class="row">
+    <div class="col-xs-6  ">  
+      <div class="well well-lg">  
+
+          <%= form_for(comment) do |f| %>
+         
+            <div class="field">
+              <%= f.label :comment %><br>
+              <%= f.text_field :body  %>
+            </div>
+            <%= f.hidden_field :post_id, {:value => comment.post_id} %>
+            
+            <div class="actions">
+              <%= f.submit %>
+            </div>
+          <%end%>
+
+      
+      </div>   
+    </div>
+  </div>

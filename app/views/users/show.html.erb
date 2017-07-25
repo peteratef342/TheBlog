@@ -1,0 +1,138 @@
+<%content_for :javascripts do %>
+   <%= javascript_include_tag 'posts' %>
+<% end %>
+
+<h1> 
+ 	<strong> <%= @user.username %>'s Profile </strong> 
+</h1> 
+
+<div>
+  <%= link_to "PDF", create_pdf_path, class: "btn btn-xs btn-primary" %>
+</div>
+
+<% if  @user.id != current_user.id %>
+
+	<div class = "visitor-profile-actions">
+
+		<%if @is_follower %>
+
+		    <button id="unfollow-btn" data-profile-id="<%= @user.id %>" data-status="unfollow"
+                              class="follow-btn btn btn-xs btn-primary" >unfollow</button>  
+        
+        <button id="follow-btn" data-profile-id="<%= @user.id %>" data-status="follow"  
+			                        class="follow-btn btn btn-xs btn-primary" style="display: none" >Folllow</button>
+
+    <%elsif @is_requester %>
+
+      <button id="request-follow-btn" data-profile-id="<%= @user.id %>" data-status="request"  
+                                      class="follow-btn btn btn-xs btn-primary" >cancel follow request</button>
+
+      <button id="follow-btn" data-profile-id="<%= @user.id %>" data-status="follow"  
+                              class="follow-btn btn btn-xs btn-primary" style="display: none" >Folllow</button>
+
+		
+    <% else %>
+
+			<button id="follow-btn" data-profile-id="<%= @user.id %>" data-status="follow"  
+			                        class="follow-btn btn btn-xs btn-primary"  >Folllow</button>
+
+      <button id="request-follow-btn" data-profile-id="<%= @user.id %>" data-status="request"  
+                                class="follow-btn btn btn-xs btn-primary" style="display: none" >cancel follow request</button>
+
+		<% end %>
+
+	</div>
+
+<% end %> 
+	
+
+
+<% @posts.each do |post| %>
+  <div class="row">
+    <div class="col-xs-8 col-xs-offset-2 ">  
+      <div class="well well-lg">  
+         
+          <div class="post-owner">
+            <%= link_to post.user.username , user_path(post.user.id) %>
+          </div>
+
+          <div class="post-title">
+            <%= link_to post.title, post_path(post) %>
+          </div>
+
+          <div>
+            <%= raw post.body %>
+          </div>
+
+        <% if post.parent_post_id %>
+          
+          <div class="row">
+            <div class="col-xs-8  ">  
+              <div class="well well-lg">  
+                
+                <% parent_post = post.parent_post %>
+
+                <div class="post-owner">
+                  <%= link_to parent_post.user.username , user_path(parent_post.user.id) %>
+                </div>
+
+                <div class="post-title">
+                  <%= link_to parent_post.title, post_path(parent_post) %>
+                </div>
+
+                <div>
+                  <%= raw parent_post.body %>
+                </div> 
+              </div>   
+            </div>
+          </div>
+        <% end %>
+        
+
+
+        <%if post.user == current_user %>
+        
+          <div class="owner-post-actions">
+            <%= link_to 'Edit', edit_post_path(post) , class: "btn btn-xs btn-primary" %> 
+            <%= link_to 'Delete', post, method: :delete, data: { confirm: 'Are you sure?' },
+            class: "btn btn-xs btn-primary"%>           
+          </div>
+
+        <%end%>
+
+        <div class="user-post-actions">
+          
+          <p class="show-likes-btn" data-post-id="<%= post.id %>"> <%="#{post.likes_num} likes"%></p>
+        
+           <%unless post.likers.include? current_user %>
+
+              <button id="like-btn-<%= post.id %>" data-post-id="<%= post.id %>" data-status="like"  
+                                  class="like-btn btn btn-xs btn-primary" >like</button>
+
+              <button id="unlike-btn-<%= post.id %>" data-post-id="<%= post.id %>" data-status="unlike"
+                                  class="like-btn btn btn-xs btn-primary" style="display: none" >unlike</button>  
+            
+          <%else%>
+
+              <button id="like-btn-<%= post.id %>" data-post-id="<%= post.id %>" data-status="like"  
+                                  class="like-btn btn btn-xs btn-primary" style="display: none" >like</button>
+
+              <button id="unlike-btn-<%= post.id %>" data-post-id="<%= post.id %>" data-status="unlike"
+                                  class="like-btn btn btn-xs btn-primary"  >unlike</button>
+
+          <%end%>
+
+          <% if (post.privacy ==  "public_post") || (post.user == current_user ) %>         
+              <%= link_to 'Share', share_post_path(post) , class: "btn btn-xs btn-primary" %> 
+          <% end %>
+
+
+        </div>
+
+      
+      </div>   
+    </div>
+  </div>
+<%end%>     
+    
+

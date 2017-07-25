@@ -1,0 +1,128 @@
+
+<%content_for :javascripts do %>
+   <%= javascript_include_tag 'posts' %>
+<% end %>
+
+
+<% if @post.errors.any? %>	
+  <ul>
+	<% @post.errors.full_messages.each do |msg|%>
+		<li><%= msg %></li>
+	<%end%>
+  </ul>
+<%end%>
+
+<% if @is_shared %>
+
+  <div class="row">
+      <div class="col-xs-6 ">  
+        <div class="well well-lg">  
+
+          <div class="post-owner">
+            <h1><strong> <%= link_to @post.user.username, user_path(@post.user) %> </strong> </h1>
+          </div>
+
+          <div class="post-title">
+            <h3><strong><%= @post.title %></strong></h3>
+          </div>
+
+          <div>
+            <%= raw @post.body %>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-8 ">  
+              <div class="well well-lg">  
+                <div class="parent-post-owner">
+                  <h3> <%= link_to @perant_post.user.username, user_path(@perant_post.user) %> </h3>
+                  </div>
+
+                  <div class="parent-post-title">
+                    <h4><strong><%= @perant_post.title %></strong></h4>
+                  </div>
+
+                  <div>
+                    <%= raw @perant_post.body %>
+                  </div>                  
+
+              </div>   
+            </div>
+          </div>
+
+
+        </div>   
+    </div>
+  </div>
+
+<% else %>
+
+  <div class="row">
+      <div class="col-xs-8 ">  
+        <div class="well well-lg">  
+
+          <div class="post-owner">
+            <h3><strong> <%= link_to @post.user.username, user_path(@post.user) %> </strong> </h3>
+          </div>
+
+          <div class="post-title">
+            <h4><strong><%= @post.title %></strong></h4>
+          </div>
+
+          <div>
+            <%= raw @post.body %>
+          </div>
+
+        </div>   
+    </div>
+  </div>
+  
+<% end %>
+
+
+
+
+<%if @post.user == current_user %>
+  <div class = "owner-post-actions">
+  <%= link_to 'Edit post', edit_post_path(@post) , class: "btn btn-xs btn-primary" %>
+  <%= link_to 'Delete post', @post, method: :delete, data: {confirm: 'Are you sure you want to Delete the post ?'}  ,class: "btn btn-xs btn-danger" %>
+  </div>
+<%end%>
+
+<div>
+
+<div >    
+    <p class="show-likes-btn" data-post-id="<%= @post.id %>"> <%="#{@post.likes_num} likes"%></p>
+</div>
+
+ <%unless @already_liked %>
+  <div class = "user-post-actions">
+
+    <button id="like-btn-<%= @post.id %>" data-post-id="<%= @post.id %>" data-status="like"  
+                        class="like-btn btn btn-xs btn-primary" >like</button>
+
+    <button id="unlike-btn-<%= @post.id %>" data-post-id="<%= @post.id %>" data-status="unlike"
+                        class="like-btn btn btn-xs btn-primary" style="display: none" >unlike</button>
+
+  
+  </div>
+  
+<%else%>
+
+  <div class = "user-post-actions">
+    <button id="like-btn-<%= @post.id %>" data-post-id="<%= @post.id %>" data-status="like"  
+                        class="like-btn btn btn-xs btn-primary" style="display: none" >like</button>
+
+    <button id="unlike-btn-<%= @post.id %>" data-post-id="<%= @post.id %>" data-status="unlike"
+                        class="like-btn btn btn-xs btn-primary"  >unlike</button>
+  </div>
+
+<%end%>
+
+
+<% @comments.each do |com| %>
+  <%= render :partial => 'comments/comment_show', :locals => {:comment => com} %>
+<%end%>    
+
+<p> 
+  <%= render :partial => 'comments/comment_new', :locals => {:comment => @comment} %>
+</p>

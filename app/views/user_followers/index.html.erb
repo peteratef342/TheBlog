@@ -1,0 +1,14 @@
+<% @friends.each do |f| %>
+  <div class="row">
+    <div class="col-xs-8 col-xs-offset-2 ">  
+      <div class="well well-lg">  
+        
+        <div class="post-owner">
+        <%= link_to f.username , user_path(f.id) %>
+        </div>
+
+      
+      </div>   
+    </div>
+  </div>
+<%end%>

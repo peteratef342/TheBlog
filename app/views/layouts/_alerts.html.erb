@@ -1,0 +1,10 @@
+<!-- ASK how to remove these two lines ? -->
+
+<!-- <p class="notice alert"><%= notice %></p>
+<p class=""><%= alert %></p>
+ -->
+<% flash.each do |name ,msg| %>
+	<ul>
+		<li><%= msg  %></li>
+	</ul>
+<% end %>
